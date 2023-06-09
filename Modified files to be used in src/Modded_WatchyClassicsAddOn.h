@@ -7636,18 +7636,18 @@ class WatchyClassicsAddOnClass : public WatchyGSR {
           String dayOfWeek = dayStr(WatchTime.Local.Wday + 1);
           display.getTextBounds(dayOfWeek, 5, 85, &x1, &y1, &w, &h);
           if(WatchTime.Local.Wday == 3) w = w - 5;
-          display.setCursor(83 - w, 160);
+          display.setCursor(84 - w, 160);
           display.print(dayOfWeek);
 
           String month = monthShortStr(WatchTime.Local.Month + 1);
           display.getTextBounds(month, 60, 110, &x1, &y1, &w, &h);
-          display.setCursor(83 - w, 136);
+          display.setCursor(84 - w, 139);
           display.print(month);
           display.setFont(&DSEG7_Classic_Bold_25);
-          display.setCursor(4, 143);
+          display.setCursor(4, 141);
           if(WatchTime.Local.Day < 10) display.print("0");
           display.print(WatchTime.Local.Day);
-          display.drawBitmap(7, 172, SSEG_steps, 19, 23, ForeColor(), BackColor());
+          display.drawBitmap(7, 173, SSEG_steps, 19, 23, ForeColor(), BackColor());
           display.setCursor(33, 197);
           display.print(CurrentStepCount());
           drawWeather();
@@ -7792,10 +7792,10 @@ class WatchyClassicsAddOnClass : public WatchyGSR {
       uint8_t H = WatchTime.Local.Hour;
 
       display.setFont(&Px437_IBM_BIOS5pt7b);
-      display.setCursor(52,106);
+      display.setCursor(52,104);
       display.println("NZST");
       display.setFont(&DSEG7_Classic_Bold_25);
-      display.setCursor(4, 93);
+      display.setCursor(4, 91);
       display.print(MakeMinutes(H+17) + ":" + MakeMinutes(WatchTime.Local.Minute));
 
       //display.setCursor(50, 175);
