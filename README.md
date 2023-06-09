@@ -6,5 +6,5 @@ IMPORTANT: To use modified files, rename the modded file by removing the "Modded
   * Added homescreen shortcut to switch between light and dark borders via SW1 + SW4 button press (Menu and down pressed together)
 
 * "Modded_WatchyClassicsAddOn.h"
-  * Added working secondary time zone thanks to using code from [Thomas Habets' watchy-face](https://github.com/ThomasHabets/watchy-face). 
+  * Added working secondary time zone thanks to inspiration from [Thomas Habets' watchy-face](https://github.com/ThomasHabets/watchy-face). 
   * Removed "Basic" watch face using modified WatchyClassicsAddOn file named as "Modded_WatchyClassicsAddOn.h" in aforementioned locations. Secondary clock added, planning to add a multi-timezone feature by being able to switch between multiple secondary timezones on the homescreen.
