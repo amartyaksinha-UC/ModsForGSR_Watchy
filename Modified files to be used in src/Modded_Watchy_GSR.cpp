@@ -2509,9 +2509,9 @@ void WatchyGSR::handleButtonPress(uint8_t Pressed){
       } else Missed = 3;  // Missed a SW3.
       break;
     case 4:
-      if (GuiMode == GSR_WATCHON){
+      if (GuiMode == GSR_WATCHON) {
         WatchFaceEnd();
-        WatchFaceStart(roller(Options.WatchFaceStyle - 1,0,WatchStyles.Count + 1));
+        WatchFaceStart(roller((Options.WatchFaceStyle + WatchStyles.Count - 1) % WatchStyles.Count, 0, WatchStyles.Count - 1));
         Options.NeedsSaving = true;
         DoHaptic = true;
         UpdateDisp = true;  // Quick Update.
@@ -2794,8 +2794,23 @@ void WatchyGSR::handleButtonPress(uint8_t Pressed){
           }
       } else Missed = 4;  // Missed a SW4.
       break;
-    default:
-      if (Pressed < 9) Missed = Pressed;  // Pass off other buttons not handled here.
+      
+    case 7:
+  if (GuiMode == GSR_WATCHON) {  // Border Mode
+    #ifdef GxEPD2DarkBorder
+    Options.Border = !Options.Border;
+    Options.NeedsSaving = true;
+    Updates.Init = true;
+    DoHaptic = true;
+    UpdateDisp = true;  // Quick Update.
+    SetTurbo();
+    #endif
+  } else {
+    Missed = 7;  // Missed a SW1 + SW4.
+  }
+  break;
+  
+if (Pressed < 9) Missed = Pressed;  // Pass off other buttons not handled here.
   }
 }
 
