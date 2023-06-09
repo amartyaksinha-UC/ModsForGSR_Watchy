@@ -7647,8 +7647,8 @@ class WatchyClassicsAddOnClass : public WatchyGSR {
           display.setCursor(4, 141);
           if(WatchTime.Local.Day < 10) display.print("0");
           display.print(WatchTime.Local.Day);
-          display.drawBitmap(7, 173, SSEG_steps, 19, 23, ForeColor(), BackColor());
-          display.setCursor(33, 197);
+          display.drawBitmap(6, 173, SSEG_steps, 19, 23, ForeColor(), BackColor());
+          display.setCursor(32, 197);
           display.print(CurrentStepCount());
           drawWeather();
           if (IsBatteryHidden()){
@@ -7768,11 +7768,11 @@ class WatchyClassicsAddOnClass : public WatchyGSR {
                 String T = String(GetWeatherTemperatureFeelsLike());
                 display.setFont(&DSEG7_Classic_Regular_39);
                 display.getTextBounds(T, 0, 0, &x1, &y1, &w, &h);
-                if(159 - w - x1 > 87) display.setCursor(165 - w - x1, 157);
-                else { display.setFont(&DSEG7_Classic_Bold_25); display.setCursor(165 - w - x1, 153); }
+                if(159 - w - x1 > 87) display.setCursor(168 - w - x1, 157);
+                else { display.setFont(&DSEG7_Classic_Bold_25); display.setCursor(166 - w - x1, 153); }
                 display.print(T);
-                display.drawBitmap(169, 110, getTemperatureScaleIcon(IsMetric()), 26, 20, ForeColor(), BackColor());
-                display.drawBitmap(151, 165, weatherIcon, 48, 32, ForeColor(), BackColor());
+                display.drawBitmap(172, 110, getTemperatureScaleIcon(IsMetric()), 26, 20, ForeColor(), BackColor());
+                display.drawBitmap(150, 165, weatherIcon, 48, 32, ForeColor(), BackColor());
             }
         }
     };
@@ -7790,23 +7790,38 @@ class WatchyClassicsAddOnClass : public WatchyGSR {
     
     void SSeg_draw2ndTime(){
       uint8_t H = WatchTime.Local.Hour;
+      uint8_t M = WatchTime.Local.Minute;
 
+      uint8_t Offset_H = 17;
+      uint8_t Offset_M = 0;
+      String TimeZone = "NZST";
       display.setFont(&Px437_IBM_BIOS5pt7b);
       display.setCursor(52,104);
-      display.println("NZST");
+      display.println(TimeZone);
       display.setFont(&DSEG7_Classic_Bold_25);
       display.setCursor(4, 91);
-      display.print(MakeMinutes(H+17) + ":" + MakeMinutes(WatchTime.Local.Minute));
+      display.print(MakeMinutes((H+Offset_H)%24) + ":" + MakeMinutes((M+Offset_M)%60));
 
-      //display.setCursor(50, 175);
-      //display.println("NYC");
-      //display.setCursor(50, 195);
-      //print_time(-5);
+      /*uint8_t Offset_H = 17;
+      uint8_t Offset_M = 0;
+      String TimeZone = "NZST";
+      display.setFont(&Px437_IBM_BIOS5pt7b);
+      display.setCursor(52,104);
+      display.println(TimeZone);
+      display.setFont(&DSEG7_Classic_Bold_25);
+      display.setCursor(4, 91);
+      display.print(MakeMinutes((H+Offset_H)%24) + ":" + MakeMinutes((M+Offset_M)%60));
 
-      //display.setCursor(100, 175);
-      //display.println("UTC");
-      //display.setCursor(100, 195);
-      //print_time(-1);
+      uint8_t Offset_H = 17;
+      uint8_t Offset_M = 0;
+      String TimeZone = "NZST";
+      display.setFont(&Px437_IBM_BIOS5pt7b);
+      display.setCursor(52,104);
+      display.println(TimeZone);
+      display.setFont(&DSEG7_Classic_Bold_25);
+      display.setCursor(4, 91);
+      display.print(MakeMinutes((H+Offset_H)%24) + ":" + MakeMinutes((M+Offset_M)%60));
+      */
     }
 
     /* StarryHorizon */
