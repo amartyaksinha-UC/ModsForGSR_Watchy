@@ -1,7 +1,6 @@
 /* Watchy Classic WatchFace AddOn:
  *
  * This collection includes the following watchfaces in order, their original web URLs are present here to those who wish to see them.
- *          Basic: https://github.com/sqfmi/Watchy/tree/master/examples/WatchFaces/Basic
  *           7SEG: https://github.com/sqfmi/Watchy/tree/master/examples/WatchFaces/7_SEG
  *            DOS: https://github.com/sqfmi/Watchy/tree/master/examples/WatchFaces/DOS
  *        Pokemon: https://github.com/sqfmi/Watchy/tree/master/examples/WatchFaces/Pokemon
@@ -7542,8 +7541,7 @@ const unsigned char *marionumbers [10] = {mario0, mario1, mario2, mario3, mario4
 #define Y_PADDING 2*COIN_SPACING+COIN_H
 
 // Place all your Variables here.
-RTC_DATA_ATTR uint8_t WatchyClassicsAddOnBasicStyle;  // Remember RTC_DATA_ATTR for your variables so they don't get wiped on deep sleep.
-RTC_DATA_ATTR uint8_t WatchyClassicsAddOnSSegStyle;   // 7_SEG
+RTC_DATA_ATTR uint8_t WatchyClassicsAddOnSSegStyle;   // 7_SEG ; Remember RTC_DATA_ATTR for your variables so they don't get wiped on deep sleep.
 RTC_DATA_ATTR uint8_t WatchyClassicsAddOnDOSStyle;    // DOS
 RTC_DATA_ATTR uint8_t WatchyClassicsAddOnPokeStyle;   // Pokemon
 RTC_DATA_ATTR uint8_t WatchyClassicsAddOnStarryStyle; // Starry Horizon
@@ -7577,7 +7575,6 @@ class WatchyClassicsAddOnClass : public WatchyGSR {
 // to track all of the WatchFaces and determine which ones match the CurrentStyleID(), as WatchFace Styles are collected and assigned at boot.
 
     void RegisterWatchFaces(){
-      WatchyClassicsAddOnBasicStyle = AddWatchStyle("Watchy Basic",this);
       WatchyClassicsAddOnSSegStyle = AddWatchStyle("Watchy 7SEG",this);
       WatchyClassicsAddOnDOSStyle = AddWatchStyle("Watchy DOS",this);
       WatchyClassicsAddOnPokeStyle = AddWatchStyle("Watchy Pokemon",this);
@@ -7591,15 +7588,7 @@ class WatchyClassicsAddOnClass : public WatchyGSR {
 // as it sets up the Style when it is called for the first time and each time the Watchy is switched to another Watchface.
 
     void InsertInitWatchStyle(uint8_t StyleID){
-      if (StyleID == WatchyClassicsAddOnBasicStyle){
-          Design.Face.Gutter = 5;
-          Design.Face.Time = 113;
-          Design.Face.TimeHeight = 53;
-          Design.Face.TimeColor = GSR_AutoFore;
-          Design.Face.TimeFont = &DSEG7_Classic_Bold_53;
-          Design.Face.TimeLeft = 5;
-          Design.Face.TimeStyle = WatchyGSR::dRIGHT;
-      } else if (StyleID == WatchyClassicsAddOnSSegStyle){
+      if (StyleID == WatchyClassicsAddOnSSegStyle){
           WantWeather(true);
           Design.Face.Gutter = 5;
           Design.Face.Time = 58;
@@ -7620,10 +7609,10 @@ class WatchyClassicsAddOnClass : public WatchyGSR {
           Design.Face.DateFont = &DSEG7_Classic_Bold_25;
           Design.Face.DateLeft = 0;
           Design.Face.DateStyle = WatchyGSR::dSTATIC;
-          Design.Status.WIFIx = 100;
+          Design.Status.WIFIx = 104;
           Design.Status.WIFIy = 91;
           Design.Status.BatteryInverted = false;
-          Design.Status.BATTx = 154;
+          Design.Status.BATTx = 158;
           Design.Status.BATTy = 73;
       }
     };
@@ -7640,27 +7629,26 @@ class WatchyClassicsAddOnClass : public WatchyGSR {
       FC = (LM ? BackColor() : ForeColor());
       BC = (LM ? ForeColor() : BackColor());
 
-      if (StyleID == WatchyClassicsAddOnBasicStyle){
+      if (StyleID == WatchyClassicsAddOnSSegStyle){
           if (SafeToDraw()) SSeg_drawTime();
-      } else if (StyleID == WatchyClassicsAddOnSSegStyle){
-          if (SafeToDraw()) SSeg_drawTime();
+          SSeg_draw2ndTime();
           display.setFont(&Seven_Segment10pt7b);
           String dayOfWeek = dayStr(WatchTime.Local.Wday + 1);
           display.getTextBounds(dayOfWeek, 5, 85, &x1, &y1, &w, &h);
           if(WatchTime.Local.Wday == 3) w = w - 5;
-          display.setCursor(84 - w, 161);
+          display.setCursor(83 - w, 160);
           display.print(dayOfWeek);
 
           String month = monthShortStr(WatchTime.Local.Month + 1);
           display.getTextBounds(month, 60, 110, &x1, &y1, &w, &h);
-          display.setCursor(85 - w, 133);
+          display.setCursor(83 - w, 136);
           display.print(month);
           display.setFont(&DSEG7_Classic_Bold_25);
-          display.setCursor(5, 143);
+          display.setCursor(4, 143);
           if(WatchTime.Local.Day < 10) display.print("0");
           display.print(WatchTime.Local.Day);
-          display.drawBitmap(10, 172, SSEG_steps, 19, 23, ForeColor(), BackColor());
-          display.setCursor(35, 197);
+          display.drawBitmap(7, 172, SSEG_steps, 19, 23, ForeColor(), BackColor());
+          display.setCursor(33, 197);
           display.print(CurrentStepCount());
           drawWeather();
           if (IsBatteryHidden()){
@@ -7783,21 +7771,42 @@ class WatchyClassicsAddOnClass : public WatchyGSR {
                 if(159 - w - x1 > 87) display.setCursor(165 - w - x1, 157);
                 else { display.setFont(&DSEG7_Classic_Bold_25); display.setCursor(165 - w - x1, 153); }
                 display.print(T);
-                display.drawBitmap(171, 110, getTemperatureScaleIcon(IsMetric()), 26, 20, ForeColor(), BackColor());
+                display.drawBitmap(169, 110, getTemperatureScaleIcon(IsMetric()), 26, 20, ForeColor(), BackColor());
                 display.drawBitmap(151, 165, weatherIcon, 48, 32, ForeColor(), BackColor());
             }
         }
     };
 
-    /* 7SEG & Basic */
+    /* 7SEG */
 
     void SSeg_drawTime(){
         uint8_t H = WatchTime.Local.Hour;
         if (!(!IsAM() && !IsPM())) H = ((H + 11)%12)+1;
         display.setTextColor(ForeColor());
         display.setFont(Design.Face.TimeFont);
-        display.setCursor(Design.Face.TimeLeft, Design.Face.Time - 2);
+        display.setCursor(Design.Face.TimeLeft, Design.Face.Time - 3);
         display.print(MakeMinutes(H) + ":" + MakeMinutes(WatchTime.Local.Minute));
+    }
+    
+    void SSeg_draw2ndTime(){
+      uint8_t H = WatchTime.Local.Hour;
+
+      display.setFont(&Px437_IBM_BIOS5pt7b);
+      display.setCursor(52,106);
+      display.println("NZST");
+      display.setFont(&DSEG7_Classic_Bold_25);
+      display.setCursor(4, 93);
+      display.print(MakeMinutes(H+17) + ":" + MakeMinutes(WatchTime.Local.Minute));
+
+      //display.setCursor(50, 175);
+      //display.println("NYC");
+      //display.setCursor(50, 195);
+      //print_time(-5);
+
+      //display.setCursor(100, 175);
+      //display.println("UTC");
+      //display.setCursor(100, 195);
+      //print_time(-1);
     }
 
     /* StarryHorizon */
