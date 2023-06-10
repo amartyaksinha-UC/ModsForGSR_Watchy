@@ -268,7 +268,7 @@ WatchyGSR::WatchyGSR(){ if (!Started) { Started = true; initZeros(); } }  //cons
 
 // Init Defaults after a reboot, setup all the variables here for defaults to avoid randomness.
 void WatchyGSR::setupDefaults(){
-    Options.TwentyFour = false;
+    Options.TwentyFour = true;
     Options.LightMode = true;
     Options.Feedback = true;
     Options.Border = false;
@@ -2796,17 +2796,27 @@ void WatchyGSR::handleButtonPress(uint8_t Pressed){
       break;
       
     case 7:
-  if (GuiMode == GSR_WATCHON) {  // Border Mode
-    #ifdef GxEPD2DarkBorder
-    Options.Border = !Options.Border;
-    Options.NeedsSaving = true;
-    Updates.Init = true;
+      if (GuiMode == GSR_WATCHON) {  // Border Mode
+        #ifdef GxEPD2DarkBorder
+        Options.Border = !Options.Border;
+        Options.NeedsSaving = true;
+        Updates.Init = true;
+        DoHaptic = true;
+        UpdateDisp = true;  // Quick Update.
+        SetTurbo();
+        #endif
+      }
+    else {
+      Missed = 7;  // Missed a SW1 + SW4.
+  }
+  break;
+  case 8:
+    if (GuiMode == GSR_WATCHON) {  // Update Weather
     DoHaptic = true;
-    UpdateDisp = true;  // Quick Update.
-    SetTurbo();
-    #endif
-  } else {
-    Missed = 7;  // Missed a SW1 + SW4.
+    StartWeather();
+    }
+  else {
+    Missed = 8;  // Missed a SW2 + SW4.
   }
   break;
   
