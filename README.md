@@ -3,7 +3,8 @@ IMPORTANT: To use modified files, rename the modded file by removing the "Modded
 
 * "Modded_Watchy_GSR.cpp"
   * Added homescreen shortcut to cycle through watchfaces (ie, when menu is not selected) using the Up (SW3) and Down (SW4) buttons.
-  * Added homescreen shortcut to switch between light and dark borders via SW1 + SW4 button press (Menu and down pressed together)
+  * Added homescreen shortcut to switch between light and dark borders via SW1 + SW4 button press (Menu and down pressed together).
+  * Added weather update home screen shortcut via SW2 + SW4 simultaneous press (Back + Down buttons)
 
 * "Modded_WatchyClassicsAddOn.h"
   * Added working secondary time zone thanks to inspiration from [Thomas Habets' watchy-face](https://github.com/ThomasHabets/watchy-face). 
