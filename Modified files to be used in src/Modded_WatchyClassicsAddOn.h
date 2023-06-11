@@ -14,7 +14,6 @@
  * Be sure to like the watch faces on their original Githubs to show the apprecation of the work done.
  */
 
-
 // Function Declarations here:  If you have any custom functions you wish to use in this file, you must declare them here:
 
   struct StarryStar {
@@ -7569,7 +7568,15 @@ class WatchyClassicsAddOnClass : public WatchyGSR {
 
     public:
     WatchyClassicsAddOnClass() : WatchyGSR() { initAddOn(this); } // *** DO NOT EDIT THE CONTENTS OF THIS FUNCTION ***
-
+    static int ClockMode;
+  
+    void setClockMode(int mode) {
+        ClockMode = mode;
+    }
+  
+    int getClockMode() {
+        return ClockMode;
+    }
 
 // This function is required by AddOns and is used to register one or more WatchFace Styles at startup, you can add more here, but you need more variables above
 // to track all of the WatchFaces and determine which ones match the CurrentStyleID(), as WatchFace Styles are collected and assigned at boot.
@@ -7787,41 +7794,49 @@ class WatchyClassicsAddOnClass : public WatchyGSR {
         display.setCursor(Design.Face.TimeLeft, Design.Face.Time - 3);
         display.print(MakeMinutes(H) + ":" + MakeMinutes(WatchTime.Local.Minute));
     }
-    
-    void SSeg_draw2ndTime(){
+
+    void SSeg_draw2ndTime() {
       uint8_t H = WatchTime.Local.Hour;
       uint8_t M = WatchTime.Local.Minute;
 
-      uint8_t Offset_H = 17;
+      uint8_t Offset_H = 0;
       uint8_t Offset_M = 0;
-      String TimeZone = "NZST";
+      String TimeZone;
+      
       display.setFont(&Px437_IBM_BIOS5pt7b);
-      display.setCursor(52,104);
-      display.println(TimeZone);
-      display.setFont(&DSEG7_Classic_Bold_25);
-      display.setCursor(4, 91);
-      display.print(MakeMinutes((H+Offset_H)%24) + ":" + MakeMinutes((M+Offset_M)%60));
+      display.setCursor(52, 104);
+      
+      switch (ClockMode) {
+        case 0:
+          Offset_H = 17;
+          Offset_M = 00;
+          TimeZone = "NZST";
+          display.println(TimeZone);
+          display.setFont(&DSEG7_Classic_Bold_25);
+          display.setCursor(4, 91);
+          display.print(MakeMinutes((H + Offset_H) % 24) + ":" + MakeMinutes((M + Offset_M) % 60));
+          break;
 
-      /*uint8_t Offset_H = 17;
-      uint8_t Offset_M = 0;
-      String TimeZone = "NZST";
-      display.setFont(&Px437_IBM_BIOS5pt7b);
-      display.setCursor(52,104);
-      display.println(TimeZone);
-      display.setFont(&DSEG7_Classic_Bold_25);
-      display.setCursor(4, 91);
-      display.print(MakeMinutes((H+Offset_H)%24) + ":" + MakeMinutes((M+Offset_M)%60));
+        case 1:
+          Offset_H = 10;
+          Offset_M = 30;
+          TimeZone = "IST";
+          display.println(TimeZone);
+          display.setFont(&DSEG7_Classic_Bold_25);
+          display.setCursor(4, 91);
+          display.print(MakeMinutes((H + Offset_H) % 24) + ":" + MakeMinutes((M + Offset_M) % 60));
+          break;
 
-      uint8_t Offset_H = 17;
-      uint8_t Offset_M = 0;
-      String TimeZone = "NZST";
-      display.setFont(&Px437_IBM_BIOS5pt7b);
-      display.setCursor(52,104);
-      display.println(TimeZone);
-      display.setFont(&DSEG7_Classic_Bold_25);
-      display.setCursor(4, 91);
-      display.print(MakeMinutes((H+Offset_H)%24) + ":" + MakeMinutes((M+Offset_M)%60));
-      */
+        case 2:
+          Offset_H = 5;
+          Offset_M = 0;
+          TimeZone = "GMT";
+          display.println(TimeZone);
+          display.setFont(&DSEG7_Classic_Bold_25);
+          display.setCursor(4, 91);
+          display.print(MakeMinutes((H + Offset_H) % 24) + ":" + MakeMinutes((M + Offset_M) % 60));
+          break;
+      }
     }
 
     /* StarryHorizon */
