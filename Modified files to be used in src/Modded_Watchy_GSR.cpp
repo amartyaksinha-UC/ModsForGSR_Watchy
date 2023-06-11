@@ -1,4 +1,6 @@
 #include "Watchy_GSR.h"
+#include "WeatherIcons.h"
+#include "WatchyClassicsAddon.h"
 
 static const char UserAgent[] PROGMEM = "Watchy";
 //WiFi statics.
@@ -1739,6 +1741,12 @@ void WatchyGSR::SoundAlarms(void * parameter){
     vTaskDelete(SoundHandle);
 }
 
+extern int WatchyClassicsAddOnClass::ClockMode = 0;  // Initialize the variable with a default value
+
+void cycleClockMode() {
+  WatchyClassicsAddOnClass::ClockMode = (WatchyClassicsAddOnClass::ClockMode + 1) % 3; // Cycle through clock modes: 0, 1, 2
+    }
+
 void WatchyGSR::handleButtonPress(uint8_t Pressed){
   uint8_t I;
   int ml, mh;
@@ -2107,7 +2115,13 @@ void WatchyGSR::handleButtonPress(uint8_t Pressed){
           } else Missed = 1;
           break;
     case 2:
-      if (GuiMode == GSR_MENUON){   // Back Button [SW2]
+      if ((GuiMode == GSR_WATCHON) && (CurrentStyleID == WatchyClassicsAddOnSSegStyle)){
+        DoHaptic = true;
+        cycleClockMode();
+        UpdateDisp = true;
+        SetTurbo();
+        break;}
+      else if (GuiMode == GSR_MENUON){   // Back Button [SW2]
           if (Menu.Item == GSR_MENU_STEPS && Menu.SubItem > 0) {  // Exit for Steps, back to Steps.
               if (Menu.SubItem == 4) Menu.SubItem = 2;  // Go back to the Hour, so it is the same as the alarms.
               Menu.SubItem--;
