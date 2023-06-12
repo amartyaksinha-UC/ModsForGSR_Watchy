@@ -7660,39 +7660,53 @@ class WatchyClassicsAddOnClass : public WatchyGSR {
           drawWeather();
           if (IsBatteryHidden()){
               float blow = SRTC.getRTCBattery(true);
+              float VBAT = getBatteryVoltage();
               float size = ((getBatteryVoltage() - blow) / (4.2 - blow)) + 0.34; // Add 1 third onto it, to keep the indicator on longer.
+              int8_t batteryLevel = 0;
+
               byte segs = constrain(size * 3,0,3);
               display.drawBitmap(Design.Status.BATTx, 73, SSEG_battery, 37, 21, ForeColor(), BackColor());
-              for(int8_t batterySegments = 0; batterySegments < segs; batterySegments++){
-                  display.fillRect(Design.Status.BATTx + 5 + (batterySegments * 9), Design.Status.BATTy + 5, 7, 11, ForeColor());
+              for(int8_t batterySegments = 0; batterySegments < segs; batterySegments++)
+              
+              display.setFont(&Px437_IBM_BIOS5pt7b);
+              display.setTextColor(ForeColor()); // Set the text color          
+              
+              if (VBAT >= 4.2) {
+                batteryLevel = 100.0;
+                display.setCursor(161, 87);
+                display.print(batteryLevel);
+                }
+              else if (VBAT >= 3.3) {
+                batteryLevel = 100.0 * (VBAT - 3.3) / 0.9;
+                display.setCursor(161, 87);
+                display.print(batteryLevel + "%");display.fillRect(batteryX + 10, batteryY, 18, 11, BackColor());
+                }
               }
-          }
       } else if (StyleID == WatchyClassicsAddOnDOSStyle){
           T = MakeMinutes(WatchTime.Local.Hour) + ":" + MakeMinutes(WatchTime.Local.Minute);
           display.setTextColor(ForeColor());
           display.setFont(&Px437_IBM_BIOS5pt7b);
           display.setCursor(0, 24);
-          display.println("WATCHY-DOS 1.1.8");
-          display.println("Copyright (c) 2020");
-          display.println(" ");
-          display.print("AUTOEXEC BAT ");
-          display.println(T);
-          display.print("COMMAND  COM ");
-          display.println(T);
-          display.print("CONFIG   SYS ");
-          display.println(T);
-          display.print("ESPTOOL  PY  ");
-          display.println(T);
-          display.println(" ");
+          display.println("WATCHY-DOS " + T);
+          display.println("Copyright (c) " + String(WatchTime.Local.Year + SRTC.getLocalYearOffset()));
+          display.println();
+          display.println("AUTOEXEC BAT " + T);
+          display.println("COMMAND  COM " + T);
+          display.println("CONFIG   SYS " + T);
+          display.println("ESPTOOL  PY  " + T);
+          display.println();
           display.println("  4 files 563 bytes");
-          T = " # hidden file"; if (WatchTime.Local.Day > 1) T += "s";
-          T.replace("#",String(WatchTime.Local.Day));
+          T = " # hidden file";
+          if (WatchTime.Local.Day > 1) {
+            T += "s";
+            }
+          T.replace("#", String(WatchTime.Local.Day));
           display.println(T);
-          display.println(" ");
+          display.println();
           T = " # bytes free";
-          T.replace("#",String(WatchTime.Local.Year + SRTC.getLocalYearOffset()));
+          T.replace("#", String(1440 - ((60 * WatchTime.Local.Hour) + WatchTime.Local.Minute)));
           display.println(T);
-          display.println(" ");
+          display.println();
           display.print("<C:\\>esptool");
       } else if (StyleID == WatchyClassicsAddOnPokeStyle){
           display.drawBitmap(0, 0, WatchyClassic_Pokemon, 200, 200, GxEPD_BLACK, GxEPD_WHITE);
@@ -7791,52 +7805,39 @@ class WatchyClassicsAddOnClass : public WatchyGSR {
         if (!(!IsAM() && !IsPM())) H = ((H + 11)%12)+1;
         display.setTextColor(ForeColor());
         display.setFont(Design.Face.TimeFont);
-        display.setCursor(Design.Face.TimeLeft, Design.Face.Time - 3);
+        display.setCursor(Design.Face.TimeLeft, Design.Face.Time - 2);
         display.print(MakeMinutes(H) + ":" + MakeMinutes(WatchTime.Local.Minute));
     }
 
     void SSeg_draw2ndTime() {
       uint8_t H = WatchTime.Local.Hour;
       uint8_t M = WatchTime.Local.Minute;
-
       uint8_t Offset_H = 0;
       uint8_t Offset_M = 0;
       String TimeZone;
-      
       display.setFont(&Px437_IBM_BIOS5pt7b);
-      display.setCursor(52, 104);
-      
+      display.setCursor(52, 105);
       switch (ClockMode) {
         case 0:
           Offset_H = 17;
           Offset_M = 00;
           TimeZone = "NZST";
-          display.println(TimeZone);
-          display.setFont(&DSEG7_Classic_Bold_25);
-          display.setCursor(4, 91);
-          display.print(MakeMinutes((H + Offset_H) % 24) + ":" + MakeMinutes((M + Offset_M) % 60));
           break;
-
         case 1:
           Offset_H = 10;
           Offset_M = 30;
           TimeZone = "IST";
-          display.println(TimeZone);
-          display.setFont(&DSEG7_Classic_Bold_25);
-          display.setCursor(4, 91);
-          display.print(MakeMinutes((H + Offset_H) % 24) + ":" + MakeMinutes((M + Offset_M) % 60));
           break;
-
         case 2:
           Offset_H = 5;
           Offset_M = 0;
           TimeZone = "GMT";
-          display.println(TimeZone);
-          display.setFont(&DSEG7_Classic_Bold_25);
-          display.setCursor(4, 91);
-          display.print(MakeMinutes((H + Offset_H) % 24) + ":" + MakeMinutes((M + Offset_M) % 60));
           break;
       }
+      display.println(TimeZone);
+      display.setFont(&DSEG7_Classic_Bold_25);
+      display.setCursor(4, 92);
+      display.print(MakeMinutes((H + Offset_H) % 24) + ":" + MakeMinutes((M + Offset_M) % 60));
     }
 
     /* StarryHorizon */
